@@ -146,6 +146,26 @@
                     <div class="rom mt-2">
                         <div class="col d-flex justify-content-between">
                             <button type="button" class="btn btn-warning" @click="etapa -= 1 ">  Voltar para lanche</button>
+                            <button type="button" class="btn btn-success" @click="confirmarpedido()"> Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" v-if="etapa == 3 ">
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header">PEDIDO CONFIRMADO</div>
+                                <div class="card-body"> 
+                                    <p>Agora é só aguardar 10 minutinhos !</p>
+                                    <p>Nosso Motoboy vai chamar você em breve </p>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rom mt-2">
+                        <div class="col d-flex justify-content-between">
+                            <button type="button" class="btn btn-primary" @click=" etapa = 1">Repetir pedido</button>
+                            <button type="button" class="btn btn-success" @click="novopedido()">Novo pedido</button>
                         </div>
                     </div>
                 </div>
@@ -162,6 +182,7 @@
                 etapa: 1,
                 inputnome:'',
                 inputendereço:'',
+                novopedidoassincrono: null
 
             },
             computed: {
@@ -220,8 +241,37 @@
                     } else {
                         alert('você precisa selecinar no mínimo um pão e um hamburguer')
                     }
+                },
+                confirmarpedido () {
+                    if(this.inputnome && this.inputendereço) {
+                        this.etapa = 3
+                        //realizar uma requisição http enviando os dados do pedido para o back-end da aplicação
+
+                        this.novopedidoassincrono = setTimeout(() => this.novopedido(), 7000)
+                    } else {
+                        alert('Você precisa informar o seu nome e endereço')
+                    }
+
+                },
+                novopedido() {
+                this.etapa = 1,
+                
+                this.inputTipoPao =''
+                this.inputSalada = []
+                this.inputMolhos = []
+                this.inputhamburguer = ''
+                this.inputnome = ''
+                this.inputendereço = ''
+
                 }
             },
+            watch: {
+                etapa(novoValor) {
+                    if(novoValor == 1 ) {
+                        clearTimeout(this.novopedidoassincrono)
+                    }
+                }
+            }
         })
     </script>
     
